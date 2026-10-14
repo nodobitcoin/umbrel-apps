@@ -1,0 +1,10 @@
+# Spy Pool — Electrum endpoint hidden service
+HiddenServiceDir /data/app-nodobitcoin-spy-pool-electrum
+HiddenServicePort 50015 10.21.21.54:50015
+# Export the Tor circuit id to the app: Tor prepends a PROXY-protocol v1 header
+# to each connection carrying the circuit id, so Spy Pool can tell distinct Tor
+# wallets apart by circuit instead of lumping them all together as 'local'.
+# The app's PROXY-protocol sniff (src/proxy/session.py) parses it best-effort and
+# falls back to local/clearnet if it is absent or malformed — it never breaks the
+# connection.
+HiddenServiceExportCircuitID haproxy

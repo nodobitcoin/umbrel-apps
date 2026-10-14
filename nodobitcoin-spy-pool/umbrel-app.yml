@@ -1,0 +1,93 @@
+manifestVersion: 1
+id: nodobitcoin-spy-pool
+category: bitcoin
+name: Spy Pool
+version: "0.1.7"
+tagline: See what your Electrum server can see
+description: >-
+  Spy Pool sits in front of your Electrum server (electrs or Fulcrum) as a
+  transparent proxy and passively records every scripthash a connecting wallet
+  queries, together with the network origin of the connection (clearnet IP or
+  Tor circuit) and the wallet's self-reported version.
+
+  It then clusters connections into entities by shared scripthashes: when the
+  same wallet reconnects from a different IP or Tor circuit and asks about the
+  same funds, both origins and any newly seen addresses are merged into one
+  entity. Reused or public addresses are quarantined so they never fuse
+  unrelated wallets. Resolved addresses and per-entity balances are shown in a
+  dashboard where every entity can be reviewed.
+
+  Spy Pool is a privacy-research and demonstration tool: it makes visible exactly
+  what an Electrum server operator is able to learn and correlate about the
+  wallets that connect to it. Run it on your own node or with clients that
+  consent. Works with electrs and Fulcrum on mainnet, testnet and signet.
+releaseNotes: >-
+  v0.1.7 — the public-address quarantine no longer mislabels the addresses of a
+  single wallet seen over several Tor circuits. Each rotating circuit counted as
+  a distinct identity, so a wallet reconnecting over Tor could cross the
+  threshold on its own addresses and have them wrongly treated as public —
+  hiding the entity's real balance and splitting it into separate zero-balance
+  entities. Quarantine is now two-pass: an address is only quarantined when
+  queried by several distinct wallets (clusters), not by many circuits of the
+  same wallet, so the entity's real balance is shown and the same wallet's
+  connections fuse into one. Real donation/shared addresses stay quarantined. The
+  entity detail also gains client-side controls to filter (all / resolved / with
+  balance / with activity) and sort the scripthash table.
+
+  v0.1.6 — the Electrum endpoint's onion now appears on its own after install or
+  update, with no manual restart: the app hands the hidden-service directory to
+  Tor (uid 1000) at startup and the hostname copy retries until it succeeds. Spy
+  Pool also flags and records when its own background re-poll detects a balance
+  change on an observed scripthash — the address is highlighted with a distinct
+  accent and a timestamp, the change is saved to an activity log, and entities
+  with recent activity are marked in the roster — so funds that move later are
+  surfaced even if the wallet never reconnects. Entities can now also be deleted
+  directly from the roster (the shared/public bucket is protected).
+
+  v0.1.5 — the Electrum endpoint's onion now appears in the dashboard
+  automatically on a fresh install, without a restart. Each entity's balance now
+  shows the funds moved out of it as the second line, and a sign-formatting bug
+  ("+−") is fixed. The entity detail splits scripthashes into resolved addresses
+  and a collapsible "unresolved" section.
+
+  v0.1.4 — the dashboard now uses the Spy Pool icon as its favicon.
+
+  v0.1.3 — spend tracking: Spy Pool now records every transaction a connected
+  wallet broadcasts through it. It parses the raw tx and stores a spend event
+  with its destinations and the amount leaving the entity, aggregates the total
+  spent per entity, and extends the cluster with the change output and
+  (best-effort) the spent inputs' addresses (common-input-ownership). Entities
+  can now be given a nickname that follows them even as the cluster grows, shown
+  in the roster. Balances are re-polled periodically so a later spend/receive is
+  reflected instead of freezing. Adds a "reset captured data" button in Settings.
+
+  v0.1.2 — the enricher now resolves the address of any scripthash with on-chain
+  history, not just those currently holding a balance, so spent/used
+  (zero-balance) addresses are accumulated and keep clustering an entity's fund
+  footprint (shown with a "spent" badge in the entity detail). The dashboard also
+  auto-refreshes the active view and shows the live wallet connection count in the
+  header, idle connections that queried no scripthash are tucked into a collapsible
+  "no activity" section, and each Tor circuit is surfaced as its own identity.
+
+  v0.1.1 — active enrichment: Spy Pool now queries the upstream itself for every
+  observed scripthash's balance and resolves its address, so funds and addresses
+  show up regardless of how the wallet syncs. Also surfaces the Electrum
+  endpoint's own Tor onion address in the dashboard.
+
+  v0.1.0 — initial release: transparent Electrum proxy, passive scripthash and
+  balance observation, entity clustering with public-address quarantine,
+  best-effort address resolution, and an entity dashboard.
+developer: Spy Pool
+website: https://github.com/nodobitcoin/umbrel-apps
+dependencies:
+  - electrs
+repo: https://github.com/nodobitcoin/umbrel-apps
+support: https://github.com/nodobitcoin/umbrel-apps/issues
+icon: https://raw.githubusercontent.com/nodobitcoin/umbrel-apps/main/nodobitcoin-spy-pool/icon.svg
+port: 4043
+gallery: []
+path: ""
+defaultUsername: ""
+defaultPassword: ""
+submitter: Spy Pool
+submission: https://github.com/nodobitcoin/umbrel-apps
